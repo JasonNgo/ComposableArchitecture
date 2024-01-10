@@ -43,7 +43,7 @@ func wolframAlpha(query: String, callback: @escaping (WolframAlphaResult?) -> Vo
 }
 
 func nthPrime(_ n: Int, callback: @escaping (PrimeResult?) -> Void) -> Void {
-    wolframAlpha(query: "prime \(n)") { result in
+//    wolframAlpha(query: "prime \(n)") { result in
         callback(
 //            result
 //                .flatMap {
@@ -58,7 +58,7 @@ func nthPrime(_ n: Int, callback: @escaping (PrimeResult?) -> Void) -> Void {
 //                .flatMap(PrimeResult.init)
             PrimeResult(value: nthPrime(nth: n))
         )
-    }
+//    }
 }
 
 extension FixedWidthInteger {
