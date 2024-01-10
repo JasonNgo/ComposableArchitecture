@@ -13,6 +13,8 @@ struct CounterView: View {
 
     @ObservedObject var state: AppState
 
+    @State private var isCounterModalPresented = false
+
     // MARK: - Body
 
     var body: some View {
@@ -29,7 +31,7 @@ struct CounterView: View {
             }
 
             Button {
-
+                self.isCounterModalPresented = true
             } label: {
                 Text("Is this prime?")
             }
@@ -42,6 +44,9 @@ struct CounterView: View {
         }
         .font(.title)
         .navigationTitle("Counter Demo")
+        .sheet(isPresented: $isCounterModalPresented, content: {
+            CounterModalView(state: state)
+        })
     }
 }
 

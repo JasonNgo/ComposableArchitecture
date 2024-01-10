@@ -18,6 +18,13 @@ class AppState: ObservableObject, Codable {
         }
     }
 
+    @Published var favouritePrimes: [Int] {
+        didSet {
+            let encodedData = try? JSONEncoder().encode(self)
+            UserDefaults.standard.setValue(encodedData, forKey: "AppState")
+        }
+    }
+
     var isCountPrime: Bool {
         guard count >= 2 else { return false }
         guard count != 2 else { return true  }
@@ -32,8 +39,10 @@ class AppState: ObservableObject, Codable {
         if let oldData = UserDefaults.standard.data(forKey: "AppState"),
            let decodedData = try? JSONDecoder().decode(AppState.self, from: oldData) {
             self.count = decodedData.count
+            self.favouritePrimes = decodedData.favouritePrimes
         } else {
             self.count = 0
+            self.favouritePrimes = []
         }
     }
 
@@ -41,16 +50,19 @@ class AppState: ObservableObject, Codable {
 
     enum CodingKeys: CodingKey {
         case count
+        case favouritePrimes
     }
 
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(count, forKey: .count)
+        try container.encode(favouritePrimes, forKey: .favouritePrimes)
     }
 
     required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         count = try container.decode(Int.self, forKey: .count)
+        favouritePrimes = try container.decode([Int].self, forKey: .favouritePrimes)
     }
 
 }
