@@ -22,6 +22,7 @@ struct CounterView: View {
                     Text("-")
                 }
                 Text("\(state.count)")
+                    .foregroundStyle(state.isCountPrime ? .green : .red)
                 Button(action: { state.count += 1 }) {
                     Text("+")
                 }

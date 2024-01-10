@@ -18,6 +18,13 @@ class AppState: ObservableObject, Codable {
         }
     }
 
+    var isCountPrime: Bool {
+        guard count >= 2 else { return false }
+        guard count != 2 else { return true  }
+        guard count % 2 != 0 else { return false }
+        return !stride(from: 3, through: Int(sqrt(Double(count))), by: 2).contains { count % $0 == 0 }
+    }
+
 
     // MARK: - Initializers
 
