@@ -13,12 +13,13 @@ struct CounterView: View {
 
     @ObservedObject var state: AppState
 
+    @State private var nthPrime: PrimeResult?
     @State private var isCounterModalPresented = false
 
     // MARK: - Body
 
     var body: some View {
-        VStack {
+        VStack(spacing: 8) {
             HStack {
                 Button(action: { state.count -= 1 }) {
                     Text("-")
@@ -37,7 +38,9 @@ struct CounterView: View {
             }
 
             Button {
-
+                ComposableArchitecture.nthPrime(state.count) { nthPrime in
+                    self.nthPrime = nthPrime
+                }
             } label: {
                 Text("What is the \(self.ordinal(state.count)) prime?")
             }
@@ -46,6 +49,9 @@ struct CounterView: View {
         .navigationTitle("Counter Demo")
         .sheet(isPresented: $isCounterModalPresented, content: {
             CounterModalView(state: state)
+        })
+        .alert(item: $nthPrime, content: { nthPrime in
+            Alert(title: Text("The \(self.ordinal(state.count)) Prime is \(nthPrime.value)"))
         })
     }
 }
