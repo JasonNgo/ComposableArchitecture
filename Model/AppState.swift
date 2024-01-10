@@ -7,7 +7,43 @@
 
 import Foundation
 
-class AppState: ObservableObject {
-    @Published var count = 0
-}
+class AppState: ObservableObject, Codable {
 
+    // MARK: - Properties
+
+    @Published var count: Int {
+        didSet {
+            let encodedData = try? JSONEncoder().encode(self)
+            UserDefaults.standard.setValue(encodedData, forKey: "AppState")
+        }
+    }
+
+
+    // MARK: - Initializers
+
+    init() {
+        if let oldData = UserDefaults.standard.data(forKey: "AppState"),
+           let decodedData = try? JSONDecoder().decode(AppState.self, from: oldData) {
+            self.count = decodedData.count
+        } else {
+            self.count = 0
+        }
+    }
+
+    // MARK: - Codable
+
+    enum CodingKeys: CodingKey {
+        case count
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(count, forKey: .count)
+    }
+
+    required init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        count = try container.decode(Int.self, forKey: .count)
+    }
+
+}
