@@ -20,23 +20,24 @@ struct CounterModalView: View {
         VStack {
             if state.isCountPrime {
                 Text("\(state.count) is a prime number")
+                
+                if state.favouritePrimes.contains(state.count) {
+                    Button(action: {
+                        state.favouritePrimes.removeAll(where: { $0 == state.count })
+                    }) {
+                        Text("Remove from favourite primes")
+                    }
+                } else {
+                    Button(action: {
+                        state.favouritePrimes.append(state.count)
+                    }) {
+                        Text("Add to favourite primes")
+                    }
+                }
             } else {
                 Text("\(state.count) is not a prime number")
             }
 
-            if state.favouritePrimes.contains(state.count) {
-                Button(action: {
-                    state.favouritePrimes.removeAll(where: { $0 == state.count })
-                }) {
-                    Text("Remove from favourite primes")
-                }
-            } else {
-                Button(action: {
-                    state.favouritePrimes.append(state.count)
-                }) {
-                    Text("Add to favourite primes")
-                }
-            }
         }
     }
 
