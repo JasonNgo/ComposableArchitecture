@@ -11,14 +11,21 @@ class AppState: ObservableObject, Codable {
 
     // MARK: - Properties
 
-    @Published var count: Int {
+    @Published var count: Int = 0 {
         didSet {
             let encodedData = try? JSONEncoder().encode(self)
             UserDefaults.standard.setValue(encodedData, forKey: "AppState")
         }
     }
 
-    @Published var favouritePrimes: [Int] {
+    @Published var favouritePrimes: [Int] = [] {
+        didSet {
+            let encodedData = try? JSONEncoder().encode(self)
+            UserDefaults.standard.setValue(encodedData, forKey: "AppState")
+        }
+    }
+
+    @Published var activityFeed: [AppState.Activity] = [] {
         didSet {
             let encodedData = try? JSONEncoder().encode(self)
             UserDefaults.standard.setValue(encodedData, forKey: "AppState")
@@ -40,9 +47,7 @@ class AppState: ObservableObject, Codable {
            let decodedData = try? JSONDecoder().decode(AppState.self, from: oldData) {
             self.count = decodedData.count
             self.favouritePrimes = decodedData.favouritePrimes
-        } else {
-            self.count = 0
-            self.favouritePrimes = []
+            self.activityFeed = decodedData.activityFeed
         }
     }
 
@@ -51,18 +56,37 @@ class AppState: ObservableObject, Codable {
     enum CodingKeys: CodingKey {
         case count
         case favouritePrimes
+        case activityFeed
     }
 
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(count, forKey: .count)
         try container.encode(favouritePrimes, forKey: .favouritePrimes)
+        try container.encode(activityFeed, forKey: .activityFeed)
     }
 
     required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         count = try container.decode(Int.self, forKey: .count)
         favouritePrimes = try container.decode([Int].self, forKey: .favouritePrimes)
+        activityFeed = try container.decode([Activity].self, forKey: .activityFeed)
     }
 
+    // MARK: - Activity
+
+    struct Activity: Codable {
+        let timestamp: Date
+        let type: `Type`
+
+        init(type: `Type`) {
+            self.timestamp = Date()
+            self.type = type
+        }
+
+        enum `Type`: Codable {
+            case addedFavouritePrime(Int)
+            case removedFavouritePrime(Int)
+        }
+    }
 }

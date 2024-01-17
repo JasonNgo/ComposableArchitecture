@@ -14,6 +14,7 @@ struct CounterView: View {
     @ObservedObject var state: AppState
 
     @State private var nthPrime: PrimeResult?
+    @State private var isNthPrimeButtonDisabled = false
     @State private var isCounterModalPresented = false
 
     // MARK: - Body
@@ -38,12 +39,15 @@ struct CounterView: View {
             }
 
             Button {
+                self.isNthPrimeButtonDisabled = true
                 ComposableArchitecture.nthPrime(state.count) { nthPrime in
                     self.nthPrime = nthPrime
+                    self.isNthPrimeButtonDisabled = false
                 }
             } label: {
                 Text("What is the \(self.ordinal(state.count)) prime?")
             }
+            .disabled(self.isNthPrimeButtonDisabled)
         }
         .font(.title)
         .navigationTitle("Counter Demo")

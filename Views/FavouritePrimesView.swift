@@ -12,6 +12,7 @@ struct FavouritePrimesView: View {
     // MARK: - Properties
 
     @Binding var favourites: [Int]
+    @Binding var feed: [AppState.Activity]
 
     // MARK: - Body
 
@@ -21,7 +22,10 @@ struct FavouritePrimesView: View {
                 Text("\(prime)")
             }
             .onDelete(perform: { indexSet in
-                indexSet.forEach { self.favourites.remove(at: $0) }
+                indexSet.forEach {
+                    let prime = self.favourites.remove(at: $0)
+                    self.feed.append(.init(type: .removedFavouritePrime(prime)))
+                }
             })
         }
         .navigationTitle("Favourite Primes")

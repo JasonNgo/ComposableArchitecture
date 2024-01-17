@@ -24,12 +24,14 @@ struct CounterModalView: View {
                 if state.favouritePrimes.contains(state.count) {
                     Button(action: {
                         state.favouritePrimes.removeAll(where: { $0 == state.count })
+                        state.activityFeed.append(.init(type: .removedFavouritePrime(state.count)))
                     }) {
                         Text("Remove from favourite primes")
                     }
                 } else {
                     Button(action: {
                         state.favouritePrimes.append(state.count)
+                        state.activityFeed.append(.init(type: .addedFavouritePrime(state.count)))
                     }) {
                         Text("Add to favourite primes")
                     }
